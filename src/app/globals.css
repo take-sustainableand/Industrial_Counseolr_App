@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* カスタムカラーパレット（くすみカラー） */
+:root {
+  /* ブランドカラー */
+  --primary: #7C9885;      /* くすみグリーン（正解、アクセント） */
+  --primary-hover: #6A8573;
+  --danger: #C4787A;       /* くすみレッド（不正解） */
+  --danger-hover: #B36668;
+  --accent: #8B9DC3;       /* くすみブルー（リンク、選択） */
+  --accent-hover: #7A8CB2;
+
+  /* 背景・サーフェス */
+  --background: #F5F3EF;   /* オフホワイト（背景） */
+  --surface: #FFFFFF;      /* カード背景 */
+
+  /* テキスト */
+  --text-primary: #3D3D3D; /* メインテキスト */
+  --text-secondary: #6B6B6B; /* サブテキスト */
+
+  /* ボーダー */
+  --border: #E0DDD7;
+
+  /* その他 */
+  --foreground: var(--text-primary);
+}
+
+/* Tailwind CSS v4 テーマ設定 */
+@theme inline {
+  /* カラー */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+
+  /* フォント */
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+}
+
+/* ダークモードは無効化（スマホ学習アプリのためライトモード固定） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ライトモードと同じ設定を維持 */
+    --background: #F5F3EF;
+    --foreground: #3D3D3D;
+  }
+}
+
+/* 基本スタイル */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans, "Hiragino Sans", sans-serif);
+  line-height: 1.6;
+  min-height: 100dvh;
+}
+
+/* スマホ向け最適化 */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* タップターゲットの最小サイズ確保 */
+button, a, input, select, textarea {
+  min-height: 44px;
+}
+
+/* スクロールバーのカスタマイズ */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
