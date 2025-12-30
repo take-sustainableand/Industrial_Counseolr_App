@@ -2,40 +2,34 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { SessionResult } from '@/components/features/study/SessionResult';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { SessionResult as SessionResultType } from '@/types';
-import { useSyncExternalStore } from 'react';
 
 /**
  * セッション結果を取得するフック
- * useSyncExternalStoreを使用してESLintルールに準拠
  */
 function useSessionResult() {
-  const getSnapshot = (): SessionResultType | null => {
-    if (typeof window === 'undefined') return null;
+  const [result, setResult] = useState<SessionResultType | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
     try {
       const stored = sessionStorage.getItem('studyResult');
-      return stored ? JSON.parse(stored) : null;
+      if (stored) {
+        setResult(JSON.parse(stored));
+      }
     } catch {
-      return null;
+      // パースエラーは無視
     }
-  };
+    setIsLoaded(true);
+  }, []);
 
-  const getServerSnapshot = (): SessionResultType | null => null;
-
-  const subscribe = (callback: () => void): (() => void) => {
-    // sessionStorageはstorageイベントをトリガーしないため、変更はない
-    // これは初回読み込み用のみ
-    window.addEventListener('storage', callback);
-    return () => window.removeEventListener('storage', callback);
-  };
-
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return { result, isLoaded };
 }
 
 /**
@@ -44,7 +38,7 @@ function useSessionResult() {
 export default function ResultPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  const result = useSessionResult();
+  const { result, isLoaded } = useSessionResult();
 
   // 未認証の場合はログインページへ
   useEffect(() => {
@@ -53,20 +47,14 @@ export default function ResultPage() {
     }
   }, [authLoading, user, router]);
 
-  // 結果がない場合はホームへ（クライアントサイドのみ）
+  // 結果がない場合はホームへ
   useEffect(() => {
-    if (typeof window !== 'undefined' && !authLoading && !result) {
-      // 少し待ってからリダイレクト（hydration完了を待つ）
-      const timeout = setTimeout(() => {
-        if (!sessionStorage.getItem('studyResult')) {
-          router.push('/');
-        }
-      }, 100);
-      return () => clearTimeout(timeout);
+    if (isLoaded && !result) {
+      router.push('/');
     }
-  }, [authLoading, result, router]);
+  }, [isLoaded, result, router]);
 
-  if (authLoading || !result) {
+  if (authLoading || !isLoaded || !result) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <LoadingSpinner size="lg" />

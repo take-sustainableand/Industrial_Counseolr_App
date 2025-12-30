@@ -1,10 +1,10 @@
 'use client';
 
 import { Card } from '@/components/ui/Card';
-import { DailySummaryDB } from '@/types';
+import { DailySummaryResponse } from '@/types';
 
 export interface DailyChartProps {
-  data: DailySummaryDB[];
+  data: DailySummaryResponse[];
 }
 
 /**
@@ -22,7 +22,7 @@ export function DailyChart({ data }: DailyChartProps) {
   }
 
   // 最大値を計算（バーの高さ計算用）
-  const maxCount = Math.max(...data.map((d) => d.question_count), 1);
+  const maxCount = Math.max(...data.map((d) => d.totalAnswers), 1);
 
   return (
     <Card>
@@ -30,18 +30,18 @@ export function DailyChart({ data }: DailyChartProps) {
 
       <div className="flex items-end justify-between gap-2 h-32">
         {data.map((day) => {
-          const height = (day.question_count / maxCount) * 100;
-          const date = new Date(day.study_date);
+          const height = (day.totalAnswers / maxCount) * 100;
+          const date = new Date(day.studyDate);
           const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
 
           return (
             <div
-              key={day.study_date}
+              key={day.studyDate}
               className="flex-1 flex flex-col items-center gap-1"
             >
               {/* 問題数 */}
               <span className="text-xs text-text-secondary">
-                {day.question_count}
+                {day.totalAnswers}
               </span>
 
               {/* バー */}
@@ -51,7 +51,7 @@ export function DailyChart({ data }: DailyChartProps) {
               >
                 <div
                   className="absolute bottom-0 left-0 right-0 bg-primary transition-all"
-                  style={{ height: `${(day.correct_count / Math.max(day.question_count, 1)) * 100}%` }}
+                  style={{ height: `${(day.correctCount / Math.max(day.totalAnswers, 1)) * 100}%` }}
                 />
               </div>
 

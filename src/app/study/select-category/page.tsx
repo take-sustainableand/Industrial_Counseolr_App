@@ -12,9 +12,9 @@ import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { useAuth } from '@/lib/hooks/useAuth';
 
 interface Chapter {
-  chapter_id: string;
-  chapter_name: string;
-  question_count: number;
+  chapter: number;
+  chapterTitle: string;
+  questionCount: number;
 }
 
 /**
@@ -95,15 +95,15 @@ export default function CategorySelectPage() {
           <div className="space-y-3">
             {chapters.map((chapter) => (
               <Link
-                key={chapter.chapter_id}
-                href={`/study/category?chapterId=${chapter.chapter_id}`}
+                key={chapter.chapter}
+                href={`/study/category?chapterId=${chapter.chapter}`}
               >
                 <Card className="hover:border-primary transition-colors">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold">{chapter.chapter_name}</h3>
+                      <h3 className="font-bold">{chapter.chapterTitle}</h3>
                       <p className="text-sm text-text-secondary">
-                        {chapter.question_count}問
+                        {chapter.questionCount}問
                       </p>
                     </div>
                     <svg

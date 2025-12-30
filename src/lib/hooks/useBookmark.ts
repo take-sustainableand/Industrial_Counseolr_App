@@ -8,6 +8,7 @@ export interface UseBookmarkReturn {
   toggleBookmark: (questionId: number) => Promise<void>;
   fetchBookmarkStatuses: (questionIds: number[]) => Promise<void>;
   loading: boolean;
+  initialLoaded: boolean;
   error: string | null;
 }
 
@@ -17,6 +18,7 @@ export interface UseBookmarkReturn {
 export function useBookmark(): UseBookmarkReturn {
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
+  const [initialLoaded, setInitialLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
@@ -97,15 +99,9 @@ export function useBookmark(): UseBookmarkReturn {
         data.bookmarks?.map((b: { question_id: number }) => b.question_id) ?? []
       );
 
-      // 現在のセッションの問題のみをフィルタ
-      const filteredSet = new Set<number>();
-      questionIds.forEach((id) => {
-        if (bookmarkedSet.has(id)) {
-          filteredSet.add(id);
-        }
-      });
-
-      setBookmarkedIds(filteredSet);
+      // 全てのブックマーク状態を設定（フィルタしない）
+      setBookmarkedIds(bookmarkedSet);
+      setInitialLoaded(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'エラーが発生しました';
       setError(message);
@@ -120,6 +116,7 @@ export function useBookmark(): UseBookmarkReturn {
     toggleBookmark,
     fetchBookmarkStatuses,
     loading,
+    initialLoaded,
     error,
   };
 }

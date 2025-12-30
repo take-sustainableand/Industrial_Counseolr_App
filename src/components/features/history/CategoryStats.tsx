@@ -2,11 +2,11 @@
 
 import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { CategoryAccuracyDB } from '@/types';
+import { CategoryAccuracy } from '@/types';
 import { formatAccuracy } from '@/lib/utils/formatters';
 
 export interface CategoryStatsProps {
-  data: CategoryAccuracyDB[];
+  data: CategoryAccuracy[];
 }
 
 /**
@@ -24,7 +24,7 @@ export function CategoryStats({ data }: CategoryStatsProps) {
   }
 
   // 正答率でソート
-  const sortedData = [...data].sort((a, b) => (a.accuracy ?? 0) - (b.accuracy ?? 0));
+  const sortedData = [...data].sort((a, b) => a.accuracy - b.accuracy);
 
   return (
     <Card>
@@ -33,7 +33,7 @@ export function CategoryStats({ data }: CategoryStatsProps) {
       <div className="space-y-4">
         {sortedData.map((category) => {
           // 正答率に応じた色
-          const accuracy = category.accuracy ?? 0;
+          const accuracy = category.accuracy;
           const getAccuracyColor = () => {
             if (accuracy >= 70) return 'text-primary';
             if (accuracy >= 50) return 'text-accent';
@@ -41,10 +41,10 @@ export function CategoryStats({ data }: CategoryStatsProps) {
           };
 
           return (
-            <div key={category.chapter_id}>
+            <div key={category.chapter}>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm font-medium truncate flex-1 mr-2">
-                  {category.chapter_name}
+                  {category.chapterTitle}
                 </span>
                 <span className={`text-sm font-bold ${getAccuracyColor()}`}>
                   {formatAccuracy(accuracy)}
@@ -56,7 +56,7 @@ export function CategoryStats({ data }: CategoryStatsProps) {
                 showLabel={false}
               />
               <div className="flex justify-between text-xs text-text-secondary mt-1">
-                <span>{category.correct_count}/{category.question_count}問</span>
+                <span>{category.correctCount}/{category.totalAnswers}問</span>
               </div>
             </div>
           );

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { TodaySummaryDB, CategoryAccuracyDB, DailySummaryDB } from '@/types';
+import { TodaySummary, CategoryAccuracy, DailySummaryResponse } from '@/types';
 
 export interface UseStatsReturn {
-  todaySummary: TodaySummaryDB | null;
-  categoryStats: CategoryAccuracyDB[];
+  todaySummary: TodaySummary | null;
+  categoryStats: CategoryAccuracy[];
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -15,8 +15,8 @@ export interface UseStatsReturn {
  * 学習統計を取得するカスタムフック
  */
 export function useStats(): UseStatsReturn {
-  const [todaySummary, setTodaySummary] = useState<TodaySummaryDB | null>(null);
-  const [categoryStats, setCategoryStats] = useState<CategoryAccuracyDB[]>([]);
+  const [todaySummary, setTodaySummary] = useState<TodaySummary | null>(null);
+  const [categoryStats, setCategoryStats] = useState<CategoryAccuracy[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,7 +66,7 @@ export function useStats(): UseStatsReturn {
 }
 
 export interface UseDailyStatsReturn {
-  dailyStats: DailySummaryDB[];
+  dailyStats: DailySummaryResponse[];
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -76,7 +76,7 @@ export interface UseDailyStatsReturn {
  * 日別統計を取得するカスタムフック
  */
 export function useDailyStats(days: number = 7): UseDailyStatsReturn {
-  const [dailyStats, setDailyStats] = useState<DailySummaryDB[]>([]);
+  const [dailyStats, setDailyStats] = useState<DailySummaryResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

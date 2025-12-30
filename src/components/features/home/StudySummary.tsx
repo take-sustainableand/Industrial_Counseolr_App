@@ -2,11 +2,11 @@
 
 import { Card } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { TodaySummaryDB } from '@/types';
+import { TodaySummary } from '@/types';
 import { formatAccuracy } from '@/lib/utils/formatters';
 
 export interface StudySummaryProps {
-  summary: TodaySummaryDB | null;
+  summary: TodaySummary | null;
   loading?: boolean;
 }
 
@@ -26,8 +26,8 @@ export function StudySummary({ summary, loading = false }: StudySummaryProps) {
     );
   }
 
-  const questionCount = summary?.question_count ?? 0;
-  const correctCount = summary?.correct_count ?? 0;
+  const questionCount = summary?.totalAnswers ?? 0;
+  const correctCount = summary?.correctCount ?? 0;
   const accuracy = summary?.accuracy ?? 0;
 
   return (

@@ -58,6 +58,7 @@ export default function StudyPage({
     toggleBookmark,
     fetchBookmarkStatuses,
     loading: bookmarkLoading,
+    initialLoaded: bookmarkInitialLoaded,
   } = useBookmark();
 
   const [hasAnswered, setHasAnswered] = useState(false);
@@ -171,7 +172,7 @@ export default function StudyPage({
           <BookmarkButton
             isBookmarked={isBookmarked(currentQuestion.id)}
             onClick={handleBookmarkToggle}
-            disabled={bookmarkLoading}
+            disabled={bookmarkLoading || !bookmarkInitialLoaded}
           />
         }
       />

@@ -23,9 +23,9 @@ export function LoginForm() {
     setErrorMessage(null);
 
     // バリデーション
-    const result = emailSchema.safeParse(email);
+    const result = emailSchema.safeParse({ email });
     if (!result.success) {
-      setErrorMessage('有効なメールアドレスを入力してください');
+      setErrorMessage(result.error.issues[0]?.message || '有効なメールアドレスを入力してください');
       return;
     }
 

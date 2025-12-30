@@ -2,14 +2,33 @@ import { createClient } from '../server';
 import type { BookmarkResponse } from '@/types';
 
 /**
- * ブックマークを追加する
+ * ブックマークを追加する（既に存在する場合は何もしない）
  */
 export async function addBookmark(
   userId: string,
   questionId: number
-): Promise<BookmarkResponse> {
+): Promise<BookmarkResponse | null> {
   const supabase = await createClient();
 
+  // まず既存のブックマークを確認
+  const { data: existing } = await supabase
+    .from('bookmarks')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('question_id', questionId)
+    .single();
+
+  // 既に存在する場合はそのまま返す
+  if (existing) {
+    return {
+      id: existing.id,
+      userId: existing.user_id,
+      questionId: existing.question_id,
+      createdAt: existing.created_at,
+    };
+  }
+
+  // 存在しない場合は追加
   const { data, error } = await supabase
     .from('bookmarks')
     .insert({
